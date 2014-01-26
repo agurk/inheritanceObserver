@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import com.google.common.reflect.ClassPath.ClassInfo;
 
-public class Results {
+public class InheritanceBush {
 	
 	Map<String, ClassDetails> results = new HashMap<String, ClassDetails>();
 	List<ClassDetails> Heads = new ArrayList<ClassDetails>();
@@ -21,7 +19,7 @@ public class Results {
 		INTERFACE_HEAD.setIsInterface(true);
 	}
 	
-	public Results() {
+	public InheritanceBush() {
 		super();
 		Heads.add(INTERFACE_HEAD);
 	}
@@ -31,17 +29,13 @@ public class Results {
 		try {
 			Class clazz = classIn.load();
 			
-			boolean isInterface = clazz.isInterface();
-			String name = clazz.getCanonicalName();
-			
 			ClassDetails head = INTERFACE_HEAD;
 			
-			if (! isInterface ) {
+			if (! clazz.isInterface() ) {
 				head = getOrCreateHead(clazz.getSuperclass().getCanonicalName());
 			}
 			
-			ClassDetails details = getOrCreateClassDetails(name);
-			details.setIsInterface(isInterface);
+			ClassDetails details = getOrCreateClassDetails(clazz);
 			details.setParent(head);
 		
 			
@@ -52,6 +46,7 @@ public class Results {
 			
 			
 		} catch (NoClassDefFoundError e) {
+			System.err.println("Could not find class: " + e.getLocalizedMessage());
 		}
 		
 	}
@@ -66,11 +61,15 @@ public class Results {
 		return returnable;
 	}
 
-	private ClassDetails getOrCreateClassDetails(String name) {
+	@SuppressWarnings("rawtypes")
+	private ClassDetails getOrCreateClassDetails(Class clazz) {
+		String name = clazz.getCanonicalName();
 		ClassDetails returnable = results.get(name);
 		if (returnable == null) {
-			returnable = new ClassDetails(name);
+			returnable = new ClassDetails(clazz);
 			results.put(name, returnable);
+		} else {
+			returnable.updateDetails(clazz);
 		}
 		Heads.remove(returnable);
 		return returnable;
@@ -88,21 +87,46 @@ public class Results {
 		return returnable;
 	}
 	
-	public void printResults() {
+	public String toString() {
+		StringBuilder results = new StringBuilder();
 		for (ClassDetails details : Heads) {
-			System.out.println(details.getName());
-			printChildren(details, details.getName() + PRINT_INDENT);
+			results.append(details.getCanonicalClassName());
+			results.append("\n");
+			printChildren(details, details.getCanonicalClassName() + PRINT_INDENT, results);
 		}
-		System.out.println("done");
+		return results.toString();
 	}
 	
-	private void printChildren(ClassDetails parent, String indent) {
-		Set<ClassDetails> children = parent.getChildren();
-		for (ClassDetails child : children) {
-			if (child == null || child.getName() == null || child.getName().equals("null"))
+	private void printChildren(ClassDetails parent, String indent, StringBuilder results) {
+		for (ClassDetails child : parent.getChildren() ) {
+			if (child == null || child.getCanonicalClassName() == null || child.getCanonicalClassName().equals("null"))
 				break;
-			System.out.println(indent + child.getName());
-			printChildren(child, indent + child.getName() + PRINT_INDENT);
+			results.append(indent);
+			results.append(child.getCanonicalClassName());
+			results.append("\n");
+			printChildren(child, indent + child.getCanonicalClassName() + PRINT_INDENT, results);
+		}
+	}
+	
+	public void findCrossPackageRelationship() {
+		for (ClassDetails details : Heads) {
+			checkChild(details);
+		}
+	}
+	
+	private void checkChild(ClassDetails parent) {
+		for (ClassDetails child : parent.getChildren()) {
+			if (child == null || child.getPackageName() == null || child.getCanonicalClassName() == null )//child.getPackageName().equals("null"))
+				break;
+			
+			if (parent == null)
+				break;
+			
+			if (!parent.getPackageName().equals(child.getPackageName())) {
+				System.out.println(parent.getCanonicalClassName() + PRINT_INDENT + child.getCanonicalClassName());
+			}
+			
+			checkChild(child);
 		}
 	}
 }

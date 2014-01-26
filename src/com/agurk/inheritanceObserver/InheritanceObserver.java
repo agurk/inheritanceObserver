@@ -7,7 +7,7 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 public class InheritanceObserver {
 	
 	public static void main(String[] ags) {
-		Results results = new Results();
+		InheritanceBush results = new InheritanceBush();
 
 		ClassPath foo;
 		
@@ -18,7 +18,8 @@ public class InheritanceObserver {
 				results.addResult(bat);
 			}
 			
-			results.printResults();
+//			results.printResults();
+			results.findCrossPackageRelationship();
 			
 		} catch (IOException e) {
 			e.printStackTrace();

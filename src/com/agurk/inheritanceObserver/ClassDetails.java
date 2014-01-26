@@ -5,8 +5,14 @@ import java.util.Set;
 
 public class ClassDetails {
 	
-	private String className;
-	
+	private String CanonicalClassName = "";
+	private String PackageName = "";
+	private String Name = "";
+
+	public String getCanonicalClassName() {
+		return CanonicalClassName;
+	}
+
 	// unknown to start with, but we assume we will find out
 	private boolean isInterface = true;
 	
@@ -14,16 +20,23 @@ public class ClassDetails {
 	private final Set<ClassDetails> children = new HashSet<ClassDetails>();
 	private final Set<ClassDetails> interfaces = new HashSet<ClassDetails>();
 	
-	public Set<ClassDetails> getInterfaces() {
-		return interfaces;
-	}
 
-	public Set<ClassDetails> getChildren() {
-		return children;
+	public ClassDetails(String canonicalName){
+		this.CanonicalClassName = canonicalName;
 	}
-
-	public ClassDetails(String name){
-		this.className = name;
+	
+	@SuppressWarnings("rawtypes")
+	public ClassDetails(Class clazz) {
+		super();
+		this.updateDetails(clazz);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void updateDetails(Class clazz) {	
+		this.CanonicalClassName = clazz.getCanonicalName();
+		this.Name = clazz.getSimpleName();
+		this.PackageName = clazz.getPackage().getName();
+		this.isInterface = clazz.isInterface();
 	}
 	
 	public void setParent(ClassDetails parent) {
@@ -39,21 +52,34 @@ public class ClassDetails {
 		this.interfaces.add(interfaceName);
 		interfaceName.addChild(this);
 	}
+	
+	public void setIsInterface (boolean isInterface) {
+		this.isInterface = isInterface;
+	}
+	
+	public String getPackageName() {
+		return PackageName;
+	}
+
 
 	public boolean isInterface() {
 		return isInterface;
-	}
-	
-	public String getName() {
-		return className;
 	}
 
 	public ClassDetails getParent() {
 		return parent;
 	}
+
+	public Set<ClassDetails> getInterfaces() {
+		return interfaces;
+	}
 	
-	public void setIsInterface (boolean isInterface) {
-		this.isInterface = isInterface;
+	public Set<ClassDetails> getChildren() {
+		return children;
+	}
+	
+	public String getName() {
+		return Name;
 	}
 
 }
