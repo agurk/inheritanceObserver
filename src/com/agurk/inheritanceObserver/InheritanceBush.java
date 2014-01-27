@@ -47,6 +47,14 @@ public class InheritanceBush {
 			
 		} catch (NoClassDefFoundError e) {
 			System.err.println("Could not find class: " + e.getLocalizedMessage());
+		} catch (IncompatibleClassChangeError e) {
+			System.err.println("Error reading name from class: " + e.getLocalizedMessage());
+		} catch (VerifyError e) {
+			System.err.println("Error with class: " + e.getLocalizedMessage());
+		} catch (InternalError e) {
+			System.err.println("Error: " + e.getLocalizedMessage());
+		} catch (SecurityException e) {
+			System.err.println("Security Error: " + e.getLocalizedMessage());
 		}
 		
 	}
