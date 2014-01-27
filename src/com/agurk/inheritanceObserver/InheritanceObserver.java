@@ -23,9 +23,10 @@ public class InheritanceObserver {
 			
 			Set<String> filters = new HashSet<String>();
 			filters.add("java.lang");
+			filters.add("java.lang.Object");
 			filters.add(InheritanceBush.INTERFACE_HEAD_PACKAGE);
 			
-			results.findCrossPackageRelationship(filters);
+			results.findCrossPackageRelationship("com.calypso");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
