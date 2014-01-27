@@ -32,10 +32,12 @@ public class ClassDetails {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void updateDetails(Class clazz) {	
+	public void updateDetails(Class clazz) {
 		this.CanonicalClassName = clazz.getCanonicalName();
-		this.Name = clazz.getSimpleName();
-		this.PackageName = clazz.getPackage().getName();
+//		this.Name = clazz.getSimpleName();
+		Package classPackage = clazz.getPackage();
+		if (classPackage != null)
+			this.PackageName = classPackage.getName();
 		this.isInterface = clazz.isInterface();
 	}
 	
