@@ -13,7 +13,7 @@ public class ClassDetails {
 		return CanonicalClassName;
 	}
 
-	// unknown to start with, but we assume we will find out
+	// unknown to start with, but we assume we will find out if not
 	private boolean isInterface = true;
 	
 	private ClassDetails parent = null;
@@ -48,6 +48,10 @@ public class ClassDetails {
 		this.children.add(child);
 	}
 	
+	public void setPackageName(String packageName) {
+		PackageName = packageName;
+	}
+	
 	public void addInterface(ClassDetails interfaceName) {
 		this.interfaces.add(interfaceName);
 		interfaceName.addChild(this);
@@ -60,7 +64,6 @@ public class ClassDetails {
 	public String getPackageName() {
 		return PackageName;
 	}
-
 
 	public boolean isInterface() {
 		return isInterface;

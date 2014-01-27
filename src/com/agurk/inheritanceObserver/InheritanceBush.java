@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class InheritanceBush {
@@ -14,9 +16,11 @@ public class InheritanceBush {
 	private final static String PRINT_INDENT = " -- ";
 	
 	public final static ClassDetails INTERFACE_HEAD = new ClassDetails("Interface_Head");
+	public final static String INTERFACE_HEAD_PACKAGE = "INTERFACE_HEAD_PACKAGE";
 	
 	static {
 		INTERFACE_HEAD.setIsInterface(true);
+		INTERFACE_HEAD.setPackageName(INTERFACE_HEAD_PACKAGE);
 	}
 	
 	public InheritanceBush() {
@@ -25,7 +29,7 @@ public class InheritanceBush {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void addResult(ClassInfo classIn) {
+	public void addClass(ClassInfo classIn) {
 		try {
 			Class clazz = classIn.load();
 			
@@ -92,41 +96,55 @@ public class InheritanceBush {
 		for (ClassDetails details : Heads) {
 			results.append(details.getCanonicalClassName());
 			results.append("\n");
-			printChildren(details, details.getCanonicalClassName() + PRINT_INDENT, results);
+			toStringChildren(details, details.getCanonicalClassName() + PRINT_INDENT, results);
 		}
 		return results.toString();
 	}
 	
-	private void printChildren(ClassDetails parent, String indent, StringBuilder results) {
+	private void toStringChildren(ClassDetails parent, String indent, StringBuilder results) {
 		for (ClassDetails child : parent.getChildren() ) {
 			if (child == null || child.getCanonicalClassName() == null || child.getCanonicalClassName().equals("null"))
 				break;
 			results.append(indent);
 			results.append(child.getCanonicalClassName());
 			results.append("\n");
-			printChildren(child, indent + child.getCanonicalClassName() + PRINT_INDENT, results);
+			toStringChildren(child, indent + child.getCanonicalClassName() + PRINT_INDENT, results);
 		}
 	}
 	
-	public void findCrossPackageRelationship() {
+	public void findCrossPackageRelationship(Set<String> filters) {
 		for (ClassDetails details : Heads) {
-			checkChild(details);
+			checkChild(details, filters);
 		}
 	}
 	
-	private void checkChild(ClassDetails parent) {
+	private void checkChild(ClassDetails parent, Set<String> filters) {
 		for (ClassDetails child : parent.getChildren()) {
-			if (child == null || child.getPackageName() == null || child.getCanonicalClassName() == null )//child.getPackageName().equals("null"))
-				break;
 			
-			if (parent == null)
+			if ( child.getCanonicalClassName() ==  null )
 				break;
-			
-			if (!parent.getPackageName().equals(child.getPackageName())) {
+		
+			if (!filters.contains(parent.getPackageName()) && !parent.getPackageName().equals(child.getPackageName())) {
 				System.out.println(parent.getCanonicalClassName() + PRINT_INDENT + child.getCanonicalClassName());
 			}
-			
-			checkChild(child);
+
+			checkChild(child, filters);
 		}
+	}
+	
+	private void checkChildDifferentPackage(ClassDetails parent) {
+		for (ClassDetails child : parent.getChildren()) {
+			
+			if ( child.getCanonicalClassName() ==  null )
+				break;
+			
+			String packageName = child.getPackageName();
+		
+			if (!filters.contains(parent.getPackageName()) && !parent.getPackageName().equals(child.getPackageName())) {
+				System.out.println(parent.getCanonicalClassName() + PRINT_INDENT + child.getCanonicalClassName());
+			}
+
+			checkChildDifferentPackage(child);
+		}		
 	}
 }
