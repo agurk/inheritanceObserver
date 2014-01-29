@@ -2,18 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/automationTest"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/batch"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/bo"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/calypsoCustom"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CalypsoHotfixes"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CalypsoRelease"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Experiments"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fo"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/thirdparty"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/unitTest"/>
-	<classpathentry kind="lib" path="/CalypsoRelease/modules/calypsoCustomisations/pathing.jar"/>
 	<classpathentry kind="lib" path="jars/guava-16.0.jar"/>
+	<classpathentry kind="lib" path="C:/dev/psc_jars"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

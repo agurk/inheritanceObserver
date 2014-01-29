@@ -154,62 +154,12 @@ public class InheritanceBush {
 		}
 		return in.getPackageName();
 	}
-	
-	public void findCrossPackageRelationship(String initialPackage) {
-		for (ClassDetails details : Heads) {
-			checkChild(details, initialPackage);
-		}
-	}
-	
-	private void checkChild(ClassDetails parent, String initialPackage) {
-		for (ClassDetails child : parent.getChildren()) {
-			
-			if ( child.getCanonicalClassName() ==  null )
-				break;
-			
-			String packageHead;
-			String childPackageHead;
-			
-			try {
-				packageHead= parent.getPackageName().substring(0, initialPackage.length());
-			} catch (StringIndexOutOfBoundsException e) {
-				packageHead = parent.getPackageName();
-			}
-			
-			try {
-				childPackageHead= child.getPackageName().substring(0, initialPackage.length());
-			} catch (StringIndexOutOfBoundsException e) {
-				childPackageHead = child.getPackageName();
-			}
-			
-			if (	
-//					!filters.contains(parent.getPackageName()) && 
-//					!filters.contains(parent.getCanonicalClassName()) &&
-					initialPackage.equals(packageHead) &&
-					!packageHead.equals(childPackageHead) &&
-					!parent.getPackageName().equals(child.getPackageName()))
-//					!parentInitialPackage.equals(childInitialPackage)    )
-			{
-				System.out.println(parent.isInterface() + PRINT_INDENT + parent.getCanonicalClassName() + PRINT_INDENT + child.getCanonicalClassName());
-			}
 
-			checkChild(child, initialPackage);
-		}
+	public List<ClassDetails> getHeads() {
+		return Heads;
 	}
 	
-//	private void checkChildDifferentPackage(ClassDetails parent) {
-//		for (ClassDetails child : parent.getChildren()) {
-//			
-//			if ( child.getCanonicalClassName() ==  null )
-//				break;
-//			
-//			String packageName = child.getPackageName();
-//		
-//			if (!filters.contains(parent.getPackageName()) && !parent.getPackageName().equals(child.getPackageName())) {
-//				System.out.println(parent.getCanonicalClassName() + PRINT_INDENT + child.getCanonicalClassName());
-//			}
-//
-//			checkChildDifferentPackage(child);
-//		}		
-//	}
+	public ClassDetails getMember(String canonicalName) {
+		return results.get(canonicalName);
+	}
 }
